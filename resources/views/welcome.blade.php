@@ -223,7 +223,7 @@
                             <div class="space-y-6">
                                 <div class="flex justify-between items-center">
                                     <span class="text-gray-600">Donation</span>
-                                    <span class="font-medium">$25</span>
+                                    <span class="font-medium" id="donationAmount">$0.00</span>
                                 </div>
                                 <div>
                                     <span class="text-gray-600 block">Credit card processing fees</span>
@@ -374,6 +374,11 @@
 
                         // Update selected amount
                         selectedAmount = parseFloat(this.dataset.amount);
+                        // Update the donation amount display
+                        const donationAmountElement = safelyGetElement('donationAmount');
+                        if (donationAmountElement) {
+                            donationAmountElement.textContent = `$${selectedAmount.toFixed(2)}`;
+                        }
                         updateTotalDisplay();
                     });
                 });

@@ -3,7 +3,8 @@
 <div x-data="{
     step: 1,
     donationType: 'one-time',
-    amount: '',
+    amount: 50,
+    selectedAmount: 50,
     customAmount: false,
     tipPercentage: 12,
     donorName: '',
@@ -20,7 +21,7 @@
             const donationData = {
                 stripeKey: '{{ $stripeKey }}',
                 donationType: this.donationType,
-                amount: this.customAmount ? this.amount : this.selectedAmount,
+                amount: this.amount,
                 tipPercentage: this.tipPercentage,
                 donorName: this.donorName,
                 donorEmail: this.donorEmail,
@@ -59,7 +60,7 @@
             isValid = false;
         }
 
-        if (!this.amount && !this.selectedAmount) {
+        if (!this.amount) {
             this.errors.amount = 'Please select or enter a donation amount';
             isValid = false;
         }
@@ -157,8 +158,14 @@ x-init="
     </div>
 
     <!-- Step 2: Payment -->
-    <div x-show="step === 2" class="space-y-6">
+    <div x-show="step === 2" class="space-y-6" x-init="$watch('amount', value => updateProcessingFee())">
         <h2 class="text-xl font-semibold mb-6">Payment Details</h2>
+
+        <!-- Amount Display -->
+        <div class="flex justify-between items-center bg-gray-50 p-4 rounded-lg">
+            <span class="text-gray-600">Selected Amount:</span>
+            <span class="font-medium" x-text="'$' + Number(amount).toFixed(2)"></span>
+        </div>
 
         <!-- Payment Element will be mounted here -->
         <div id="payment-element" class="mb-6"></div>
@@ -223,6 +230,8 @@ x-init="
 @push('scripts')
 <script>
     function updateProcessingFee() {
+        if (!this.amount) return;
+
         const amount = Number(this.amount);
         const paymentMethod = this.paymentMethod;
 

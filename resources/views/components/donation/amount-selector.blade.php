@@ -1,13 +1,17 @@
-@props(['defaultAmount' => 25])
+@props(['defaultAmount' => 50])
 
 <div
     x-data="{
         selectedAmount: {{ $defaultAmount }},
         customAmount: false,
         updateAmount(amount) {
+            amount = parseFloat(amount);
             this.selectedAmount = amount;
             this.customAmount = false;
             this.$dispatch('amount-changed', { amount });
+            this.$parent.amount = amount;
+            this.$parent.selectedAmount = amount;
+            this.$parent.updateProcessingFee();
         }
     }"
     class="space-y-4"
@@ -44,7 +48,13 @@
         <input
             type="number"
             x-model="selectedAmount"
-            @input="$dispatch('amount-changed', { amount: $event.target.value })"
+            @input="
+                let value = parseFloat($event.target.value) || 0;
+                $dispatch('amount-changed', { amount: value });
+                $parent.amount = value;
+                $parent.selectedAmount = value;
+                $parent.updateProcessingFee();
+            "
             placeholder="Enter custom amount"
             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:border-[#B08D57] focus:ring-[#B08D57]"
             min="1"
