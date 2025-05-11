@@ -14,7 +14,16 @@ export default {
             fontFamily: {
                 sans: ['Figtree', ...defaultTheme.fontFamily.sans],
             },
+            colors: {
+                nightbright: {
+                    primary: '#C49052',
+                    hover: '#B37F3C',
+                    light: '#FFF9E5',
+                }
+            },
         },
     },
-    plugins: [],
+    plugins: [
+        require('@tailwindcss/forms'),
+    ],
 };
